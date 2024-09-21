@@ -1,28 +1,39 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { PasswordValidatorService } from '../password-validator.service';
 import { CommonModule } from '@angular/common';
+import { PasswordValidateRequest } from '../interfaces/password-validate-request';
 
 @Component({
-  selector: 'app-password-validator',
   standalone: true,
+  selector: 'app-password-validator',
   imports: [CommonModule, FormsModule],
-  templateUrl: './password-validator.component.html',
-  styleUrl: './password-validator.component.scss'
+  styleUrl: './password-validator.component.scss',
+  templateUrl: './password-validator.component.html'
 })
 export class PasswordValidatorComponent {
-  password: string = '';
-  validationResult: boolean | null = null;
+  public apiLogError = '';
+  public passwordInput: string = '';
+  public validationResult: boolean | null = null;
 
-  constructor(private readonly passwordValidatorService: PasswordValidatorService) {}
+  private readonly passwordValidatorService = inject(PasswordValidatorService);
 
-  validatePassword() {
-    this.passwordValidatorService.validatePasswordFake(this.password).subscribe(
-      {
-        next: (result) => this.validationResult = result,
-        error: (err) => alert(err),
-      }
-    );
+  public validatePassword(): void {
+    const pwdToValidate: PasswordValidateRequest = { 
+      password: this.passwordInput
+    };
+    this.passwordValidatorService
+      .validatePassword(pwdToValidate)
+      .subscribe({
+        next: (result: boolean) => {
+          this.validationResult = result;
+          this.apiLogError = '';
+        },
+        error: (err: Error) => {
+          this.apiLogError = err.message
+          console.error(err);
+        },
+      });
   }
 }

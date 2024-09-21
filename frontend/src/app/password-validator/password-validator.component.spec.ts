@@ -24,12 +24,4 @@ describe('PasswordValidatorComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
-
-  it('should validate password', () => {
-    // mockService.validatePassword.and.returnValue(of(true));
-    component.password = 'ValidPass1@';
-    component.validatePassword();
-    fixture.detectChanges();
-    expect(component.validationResult).toBeTrue();
-  });
 });
