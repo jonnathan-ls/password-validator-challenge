@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { PasswordValidatorService } from '../password-validator.service';
-import { CommonModule } from '@angular/common';
 import { PasswordValidateRequest } from '../interfaces/password-validate-request';
 
 @Component({
@@ -20,6 +20,7 @@ export class PasswordValidatorComponent {
   private readonly passwordValidatorService = inject(PasswordValidatorService);
 
   public validatePassword(): void {
+    this.resetResultsOfComponent();
     const pwdToValidate: PasswordValidateRequest = { 
       password: this.passwordInput
     };
@@ -28,12 +29,17 @@ export class PasswordValidatorComponent {
       .subscribe({
         next: (result: boolean) => {
           this.validationResult = result;
-          this.apiLogError = '';
         },
         error: (err: Error) => {
-          this.apiLogError = err.message
+          this.apiLogError = err.message;
+          this.validationResult = null;
           console.error(err);
         },
       });
+  }
+
+  private resetResultsOfComponent(){
+    this.validationResult = null;
+    this.apiLogError = '';
   }
 }

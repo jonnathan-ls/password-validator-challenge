@@ -28,7 +28,9 @@ public class SecurityConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost")); // TODO: Change endpoint with domain AWS
+         // TODO: Change endpoint with domain AWS ---------------------------------------
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost", "http://localhost:4200"));
+         // -----------------------------------------------------------------------------
         corsConfiguration.setAllowedMethods(Arrays.asList("POST"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         corsConfiguration.setAllowCredentials(true);

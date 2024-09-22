@@ -22,6 +22,6 @@ RUN chown -R api /backend
 
 USER api
 
-EXPOSE 3000
+EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "pwd-validor-api.jar"]

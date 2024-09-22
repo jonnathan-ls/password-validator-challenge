@@ -1,82 +1,82 @@
-name: CI/CD Pipeline
+# name: CI/CD Pipeline
 
-on:
-  push:
-    branches:
-      - development
-  pull_request:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - development
+#   pull_request:
+#     branches:
+#       - main
 
-env:
-  AWS_REGION: ${{ secrets.AWS_REGION }}
-  ECR_FRONTEND_REPO: ${{ secrets.ECR_FRONTEND_REPO }}
-  ECR_BACKEND_REPO: ${{ secrets.ECR_BACKEND_REPO }}
-  CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
-  FRONTEND_SERVICE: ${{ secrets.FRONTEND_SERVICE }}
-  BACKEND_SERVICE: ${{ secrets.BACKEND_SERVICE }}
+# env:
+#   AWS_REGION: ${{ secrets.AWS_REGION }}
+#   ECR_FRONTEND_REPO: ${{ secrets.ECR_FRONTEND_REPO }}
+#   ECR_BACKEND_REPO: ${{ secrets.ECR_BACKEND_REPO }}
+#   CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
+#   FRONTEND_SERVICE: ${{ secrets.FRONTEND_SERVICE }}
+#   BACKEND_SERVICE: ${{ secrets.BACKEND_SERVICE }}
 
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+#     steps:
+#       - name: Checkout Code
+#         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v3
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+#       - name: Configure AWS Credentials
+#         uses: aws-actions/configure-aws-credentials@v4
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Log in to Amazon ECR
-        id: login-backend
-        uses: aws-actions/amazon-ecr-login@v2
-        with:
-          mask-password: true
-          registry: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+#       - name: Log in to Amazon ECR
+#         id: login-backend
+#         uses: aws-actions/amazon-ecr-login@v2
+#         with:
+#           mask-password: true
+#           registry: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
-      - name: Build, Tag, and Push Frontend Docker Image
-        env:
-          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-          ECR_REPOSITORY: ${{ env.ECR_FRONTEND_REPO }}
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build -t $ECR_REPOSITORY:latest ./frontend
-          docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+#       - name: Build, Tag, and Push Frontend Docker Image
+#         env:
+#           ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+#           ECR_REPOSITORY: ${{ env.ECR_FRONTEND_REPO }}
+#           IMAGE_TAG: ${{ github.sha }}
+#         run: |
+#           docker build -t $ECR_REPOSITORY:latest ./frontend
+#           docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+#           docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
+#           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+#           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
-      - name: Build, Tag, and Push Backend Docker Image
-        env:
-          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-          ECR_REPOSITORY: ${{ env.ECR_BACKEND_REPO }}
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build -t $ECR_REPOSITORY:latest ./backend
-          docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+#       - name: Build, Tag, and Push Backend Docker Image
+#         env:
+#           ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+#           ECR_REPOSITORY: ${{ env.ECR_BACKEND_REPO }}
+#           IMAGE_TAG: ${{ github.sha }}
+#         run: |
+#           docker build -t $ECR_REPOSITORY:latest ./backend
+#           docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+#           docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
+#           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+#           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
-      - name: Update ECS Service Frontend
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          task-definition: password-validate-frontend-task
-          cluster: ${{ env.CLUSTER_NAME }}
-          service: ${{ env.FRONTEND_SERVICE }}
-          image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_FRONTEND_REPO }}:latest
+#       - name: Update ECS Service Frontend
+#         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+#         with:
+#           task-definition: password-validate-frontend-task
+#           cluster: ${{ env.CLUSTER_NAME }}
+#           service: ${{ env.FRONTEND_SERVICE }}
+#           image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_FRONTEND_REPO }}:latest
 
-      - name: Update ECS Service Backend
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          task-definition: password-validate-backend-task
-          cluster: ${{ env.CLUSTER_NAME }}
-          service: ${{ env.BACKEND_SERVICE }}
-          image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_BACKEND_REPO }}:latest
+#       - name: Update ECS Service Backend
+#         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+#         with:
+#           task-definition: password-validate-backend-task
+#           cluster: ${{ env.CLUSTER_NAME }}
+#           service: ${{ env.BACKEND_SERVICE }}
+#           image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_BACKEND_REPO }}:latest
