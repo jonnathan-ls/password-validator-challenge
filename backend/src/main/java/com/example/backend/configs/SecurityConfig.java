@@ -29,7 +29,11 @@ public class SecurityConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
          // TODO: Change endpoint with domain AWS ---------------------------------------
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost", "http://localhost:4200"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList(
+            "http://ec2-107-22-85-101.compute-1.amazonaws.com:80",
+            "http://localhost:4200",
+            "http://localhost:80"
+            ));
          // -----------------------------------------------------------------------------
         corsConfiguration.setAllowedMethods(Arrays.asList("POST"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
