@@ -30,12 +30,12 @@ public class SecurityConfig {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
          // TODO: Change endpoint with domain AWS ---------------------------------------
         corsConfiguration.setAllowedOrigins(Arrays.asList(
-            "http://ec2-107-22-85-101.compute-1.amazonaws.com:80",
+            "http://ec2-107-22-85-101.compute-1.amazonaws.com",
             "http://localhost:4200",
-            "http://localhost:80"
+            "http://localhost"
             ));
          // -----------------------------------------------------------------------------
-        corsConfiguration.setAllowedMethods(Arrays.asList("POST"));
+        corsConfiguration.setAllowedMethods(Arrays.asList("OPTIONS", "POST"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         corsConfiguration.setAllowCredentials(true);
         
