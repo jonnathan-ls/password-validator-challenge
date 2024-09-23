@@ -10,21 +10,17 @@ public class PasswordValidatorService {
     private static final Set<Character> SPECIAL_CHARACTERS = 
         Set.of('!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '+');
     private static final Set<Character> checkedCharacters = new HashSet<>();
-    
-    /**
-     * Verifica se a senha é válida.
-     * @param password A senha a ser validada.
-     * @return true se a senha for válida, false caso contrário.
-     */
+
     public boolean isValid(String password) {
         if (password == null || password.length() < 8)
             return false;
-
+        
         boolean hasDigit = false;
         boolean hasLowercase = false;
         boolean hasUppercase = false;
         boolean hasSpecialChar = false;
         
+        checkedCharacters.clear();
         for (char ch : password.toCharArray()) {
             if (Character.isWhitespace(ch))
                 return false;
