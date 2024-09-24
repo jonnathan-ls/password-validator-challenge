@@ -2,8 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http'; 
 
 import { Observable, of } from 'rxjs';
-import { urlConfig } from './configs/url.config';
-import { PasswordValidateRequest } from './interfaces/password-validate-request';
+import { urlConfig } from '../configs/url.config';
+import { PasswordValidateRequest } from '../interfaces/password-validate-request';
 
 @Injectable({ providedIn: 'root' })
 export class PasswordValidatorService {

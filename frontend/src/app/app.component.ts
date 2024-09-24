@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { Component, inject } from '@angular/core';
 
-import { AuthService } from './auth.service';
+import { AuthService } from './services/auth.service';
 import { PasswordValidatorComponent } from './password-validator/password-validator.component';
 
 @Component({
@@ -13,7 +13,7 @@ import { PasswordValidatorComponent } from './password-validator/password-valida
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'frontend';
+  title = 'Password Validator';
   public isAuthenticated = false;
   public authenticationLog = '';
 

@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { PasswordValidatorService } from '../password-validator.service';
+import { PasswordValidatorService } from '../services/password-validator.service';
 import { PasswordValidateRequest } from '../interfaces/password-validate-request';
 
 @Component({
@@ -38,7 +38,7 @@ export class PasswordValidatorComponent {
       });
   }
 
-  private resetResultsOfComponent(){
+  public resetResultsOfComponent(){
     this.validationResult = null;
     this.apiLogError = '';
   }
