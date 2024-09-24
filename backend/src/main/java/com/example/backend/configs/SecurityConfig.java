@@ -30,7 +30,7 @@ public class SecurityConfig {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOrigins(Arrays.asList(
             "pwd-validator-alb-857814613.us-east-1.elb.amazonaws.com",
-            "http://ec2-107-22-85-101.compute-1.amazonaws.com",
+            "http://ec2-44-203-94-189.compute-1.amazonaws.com",
             "http://localhost:4200",
             "http://localhost"
         ));
