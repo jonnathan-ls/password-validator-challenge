@@ -82,10 +82,10 @@ jobs:
             --service ${{ env.BACKEND_SERVICE }} \
             --force-new-deployment
 
-      - name: Wait for services to stabilize
-        run: |
-          aws ecs wait services-stable \
-            --cluster ${{ env.CLUSTER_NAME }} \
-            --services ${{ env.FRONTEND_SERVICE }},${{ env.BACKEND_SERVICE }}
+      # - name: Wait for services to stabilize
+      #   run: |
+      #     aws ecs wait services-stable \
+      #       --cluster ${{ env.CLUSTER_NAME }} \
+      #       --services ${{ env.FRONTEND_SERVICE }} ${{ env.BACKEND_SERVICE }}
       # TODO: Pending automation of task creation with the updated image 
       # and upload the application with a possible frontend endpoint and fixed backend
