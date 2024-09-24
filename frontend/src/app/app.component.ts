@@ -1,12 +1,14 @@
-import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { PasswordValidatorComponent } from './password-validator/password-validator.component';
+import { Component, inject } from '@angular/core';
+
 import { AuthService } from './auth.service';
+import { PasswordValidatorComponent } from './password-validator/password-validator.component';
 
 @Component({
   standalone: true,
   selector: 'app-root',
-  imports: [RouterOutlet, PasswordValidatorComponent],
+  imports: [RouterOutlet, PasswordValidatorComponent, CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -19,8 +21,14 @@ export class AppComponent {
 
   public authenticate(): void {
     this.authService.authenticate().subscribe({
-      next: () => this.authenticationLog = '🟢 Authentication completed successfully',
-      error: (err: Error) => this.authenticationLog = `🔴 Authentication failed: ${err.message}`
+      next: () => {
+        this.isAuthenticated = true;
+        this.authenticationLog = '🟢 Authentication completed successfully';
+      },
+      error: (err: Error) => {
+        this.isAuthenticated = false;
+        this.authenticationLog = `🔴 Authentication failed: ${err.message}`;
+      },
     });
   }
 }

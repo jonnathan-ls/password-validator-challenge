@@ -1,5 +1,20 @@
-<div class="password-validator">
-    <button (click)="authenticate()">Authenticate</button>
-    <p>{{ authenticationLog }}</p>
+<div class="main-component">
+    <header class="header">
+      <h1>Password Validator Challenge</h1>
+    </header>
+  
+    <main class="main-content">
+      <div class="password-validator">
+        <button class="authenticate-btn" (click)="authenticate()">
+            Authenticate
+        </button>
+        <p class="auth-log">{{ authenticationLog }}</p>
+      </div>
+      <app-password-validator></app-password-validator>
+    </main>
+  
+    <footer class="footer">
+      <p>&copy; 2024 <a href="https://github.com/jonnathan-ls"> https://github.com/jonnathan-ls</a> 👨‍💻 </p>
+    </footer>
 </div>
-<app-password-validator></app-password-validator>
+  
