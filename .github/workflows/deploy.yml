@@ -1,9 +1,9 @@
 name: CI/CD Pipeline
 
 on:
-  # push:
-  #   branches:
-  #     - development
+  push:
+    branches:
+      - development
   pull_request:
     branches:
       - main
@@ -48,25 +48,19 @@ jobs:
         env:
           ECR_REGISTRY: ${{ env.ECR_REGISTRY }}
           ECR_REPOSITORY: ${{ env.ECR_FRONTEND_REPO }}
-        #  IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REPOSITORY:latest ./frontend
           docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-        # docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        # docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Push Backend Docker Image
         env:
           ECR_REGISTRY: ${{ env.ECR_REGISTRY }}
           ECR_REPOSITORY: ${{ env.ECR_BACKEND_REPO }}
-        #  IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REPOSITORY:latest ./backend
           docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-        #  docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        #  docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
       
       - name: Update ECS task definition for frontend
         run: |
@@ -82,10 +76,8 @@ jobs:
             --service ${{ env.BACKEND_SERVICE }} \
             --force-new-deployment
 
-      # - name: Wait for services to stabilize
-      #   run: |
-      #     aws ecs wait services-stable \
-      #       --cluster ${{ env.CLUSTER_NAME }} \
-      #       --services ${{ env.FRONTEND_SERVICE }} ${{ env.BACKEND_SERVICE }}
-      # TODO: Pending automation of task creation with the updated image 
-      # and upload the application with a possible frontend endpoint and fixed backend
+      - name: Wait for services to stabilize
+        run: |
+          aws ecs wait services-stable \
+            --cluster ${{ env.CLUSTER_NAME }} \
+            --services ${{ env.FRONTEND_SERVICE }} ${{ env.BACKEND_SERVICE }}
