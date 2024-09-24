@@ -16,6 +16,8 @@ env:
   FRONTEND_SERVICE: ${{ secrets.FRONTEND_SERVICE }}
   BACKEND_SERVICE: ${{ secrets.BACKEND_SERVICE }}
   ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+  TASK_DEFINITION_FRONTEND: ${{ secrets.TASK_DEFINITION_FRONTEND }}
+  TASK_DEFINITION_BACKEND: ${{ secrets.TASK_DEFINITION_BACKEND }}
 
 jobs:
   build-and-deploy:
@@ -65,6 +67,25 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
         #  docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         #  docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      
+      - name: Update ECS task definition for frontend
+        run: |
+          aws ecs update-service \
+            --cluster ${{ env.CLUSTER_NAME }} \
+            --service ${{ env.FRONTEND_SERVICE }} \
+            --force-new-deployment
+      
+      - name: Update ECS task definition for backend
+        run: |
+          aws ecs update-service \
+            --cluster ${{ env.CLUSTER_NAME }} \
+            --service ${{ env.BACKEND_SERVICE }} \
+            --force-new-deployment
 
+      - name: Wait for services to stabilize
+        run: |
+          aws ecs wait services-stable \
+            --cluster ${{ env.CLUSTER_NAME }} \
+            --services ${{ env.FRONTEND_SERVICE }},${{ env.BACKEND_SERVICE }}
       # TODO: Pending automation of task creation with the updated image 
       # and upload the application with a possible frontend endpoint and fixed backend
