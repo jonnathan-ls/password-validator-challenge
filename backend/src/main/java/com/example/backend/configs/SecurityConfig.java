@@ -28,13 +28,12 @@ public class SecurityConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-         // TODO: Change endpoint with domain AWS ---------------------------------------
         corsConfiguration.setAllowedOrigins(Arrays.asList(
+            "pwd-validator-alb-857814613.us-east-1.elb.amazonaws.com",
             "http://ec2-107-22-85-101.compute-1.amazonaws.com",
             "http://localhost:4200",
             "http://localhost"
-            ));
-         // -----------------------------------------------------------------------------
+        ));
         corsConfiguration.setAllowedMethods(Arrays.asList("OPTIONS", "POST"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         corsConfiguration.setAllowCredentials(true);

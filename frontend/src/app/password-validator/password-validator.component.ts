@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { ApiDeployType } from '../interfaces/api-deploy.type';
 import { PasswordValidatorService } from '../services/password-validator.service';
 import { PasswordValidateRequest } from '../interfaces/password-validate-request';
 
@@ -14,6 +15,8 @@ import { PasswordValidateRequest } from '../interfaces/password-validate-request
 })
 export class PasswordValidatorComponent {
   public apiLogError = '';
+  public apiEndpointType: ApiDeployType = 'LoadBalancer';
+
   public passwordInput: string = '';
   public validationResult: boolean | null = null;
 
@@ -21,13 +24,15 @@ export class PasswordValidatorComponent {
 
   public validatePassword(): void {
     this.resetResultsOfComponent();
+    this.apiLogError = '...';
     const pwdToValidate: PasswordValidateRequest = { 
       password: this.passwordInput
     };
     this.passwordValidatorService
-      .validatePassword(pwdToValidate)
+      .validatePassword(pwdToValidate, this.apiEndpointType)
       .subscribe({
         next: (result: boolean) => {
+          this.apiLogError = '';
           this.validationResult = result;
         },
         error: (err: Error) => {

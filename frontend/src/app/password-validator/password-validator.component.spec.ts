@@ -42,7 +42,7 @@ describe('PasswordValidatorComponent', () => {
     expect(component.validationResult).toBeNull();
   });
 
-  it('deve chamar validatePassword do serviço com a senha correta quando o botão é clicado', () => {
+  it('Should call validatePassword from the service with the correct password when the button is clicked', () => {
     const testPassword = 'Teste@123';
     component.passwordInput = testPassword;
 
@@ -53,7 +53,7 @@ describe('PasswordValidatorComponent', () => {
     fixture.detectChanges();
 
     expect(mockPasswordValidatorService.validatePassword)
-      .toHaveBeenCalledOnceWith({ password: testPassword });
+      .toHaveBeenCalledWith({ password: testPassword }, 'LoadBalancer');
   });
 
   it('should update validationResult to true when password is valid', () => {

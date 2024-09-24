@@ -1,18 +1,18 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { urlConfig } from '../configs/url.config';
 import { PasswordValidatorService } from './password-validator.service';
 import { PasswordValidateRequest } from '../interfaces/password-validate-request';
+import { environment } from '../../environments/environment';
 
 describe('PasswordValidatorService', () => {
   let httpMock: HttpTestingController;
   let service: PasswordValidatorService;
   
-  const mockUrl = 'https://mock-api/password-validate';
+  const mockUrl = 'https://mock-api';
 
   beforeEach(() => {
-    (urlConfig.api.passwordValidate as string) = mockUrl;
+    environment.apiUrl.LoadBalancer = mockUrl;
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -40,7 +40,8 @@ describe('PasswordValidatorService', () => {
         expect(response).toBeTrue();
       });
 
-      const req = httpMock.expectOne(mockUrl);
+      const expectedMockUrl = `${mockUrl}/password/validate`;
+      const req = httpMock.expectOne(expectedMockUrl);
       expect(req.request.method).toBe('POST');
       expect(req.request.headers.get('Content-Type')).toBe('application/json');
       expect(req.request.body).toEqual(request);
@@ -56,7 +57,8 @@ describe('PasswordValidatorService', () => {
         expect(response).toBeFalse();
       });
 
-      const req = httpMock.expectOne(mockUrl);
+      const expectedMockUrl = `${mockUrl}/password/validate`;
+      const req = httpMock.expectOne(expectedMockUrl);
       expect(req.request.method).toBe('POST');
       expect(req.request.headers.get('Content-Type')).toBe('application/json');
       expect(req.request.body).toEqual(request);
@@ -78,7 +80,8 @@ describe('PasswordValidatorService', () => {
         }
       });
 
-      const req = httpMock.expectOne(mockUrl);
+      const expectedMockUrl = `${mockUrl}/password/validate`;
+      const req = httpMock.expectOne(expectedMockUrl);
       expect(req.request.method).toBe('POST');
       expect(req.request.headers.get('Content-Type')).toBe('application/json');
       expect(req.request.body).toEqual(request);
