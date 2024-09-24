@@ -10,8 +10,10 @@ RUN apt-get update && apt-get install gnupg wget -y && \
     apt-get install google-chrome-stable -y --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
-WORKDIR /temp/frontend
+WORKDIR /frontend
+
 COPY . .
+
 RUN rm -rf node_modules
 RUN npm ci --verbose
 
@@ -20,6 +22,8 @@ RUN npm run build
 
 FROM nginx:1.26.2-alpine
 
-COPY --from=build /temp/frontend/dist/browser /usr/share/nginx/html
+COPY --from=build /frontend/dist/browser /usr/share/nginx/html
+
 EXPOSE 80
+
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

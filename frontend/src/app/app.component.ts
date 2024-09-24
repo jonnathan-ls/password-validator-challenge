@@ -4,6 +4,11 @@ import { Component, inject, ViewEncapsulation } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { PasswordValidatorComponent } from './password-validator/password-validator.component';
 
+
+/**
+ * Root component of the Password Validator application. Handles authentication and displays 
+ * the status of authentication alongside the password validator.
+ */
 @Component({
   standalone: true,
   selector: 'app-root',
@@ -19,6 +24,10 @@ export class AppComponent {
 
   private readonly authService = inject(AuthService);
 
+  /**
+   * Triggers the authentication process via the `AuthService`. 
+   * Updates the `isAuthenticated` flag and logs success or failure messages.
+   */
   public authenticate(): void {
     this.authService.authenticate().subscribe({
       next: () => {

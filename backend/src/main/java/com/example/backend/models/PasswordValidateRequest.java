@@ -1,5 +1,8 @@
 package com.example.backend.models;
 
+/**
+ * Model representing the request body for password validation.
+ */
 public class PasswordValidateRequest {
     private String password;
 

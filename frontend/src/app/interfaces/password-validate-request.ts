@@ -1,3 +1,8 @@
+/**
+ * Interface representing the request body for password validation.
+ */
 export interface PasswordValidateRequest {
-    password: string
+    /** The password that needs to be validated. */
+    password: string;
 }
+  

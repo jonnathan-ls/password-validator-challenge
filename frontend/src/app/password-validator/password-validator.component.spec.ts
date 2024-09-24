@@ -37,7 +37,7 @@ describe('PasswordValidatorComponent', () => {
   });
 
   it('deve ter o estado inicial correto', () => {
-    expect(component.apiLogError).toBe('');
+    expect(component.apiRequestLog).toBe('');
     expect(component.passwordInput).toBe('');
     expect(component.validationResult).toBeNull();
   });
@@ -66,7 +66,7 @@ describe('PasswordValidatorComponent', () => {
     fixture.detectChanges();
 
     expect(component.validationResult).toBeTrue();
-    expect(component.apiLogError).toBe('');
+    expect(component.apiRequestLog).toBe('');
 
     const resultElement: HTMLElement = fixture.debugElement.query(By.css('.validation-result')).nativeElement;
     expect(resultElement.textContent).toContain('VALID');
@@ -82,7 +82,7 @@ describe('PasswordValidatorComponent', () => {
     fixture.detectChanges();
 
     expect(component.validationResult).toBeFalse();
-    expect(component.apiLogError).toBe('');
+    expect(component.apiRequestLog).toBe('');
 
     const resultElement: HTMLElement = fixture.debugElement.query(By.css('.validation-result')).nativeElement;
     expect(resultElement.textContent).toContain('INVALID');
@@ -102,7 +102,7 @@ describe('PasswordValidatorComponent', () => {
     fixture.detectChanges();
 
     expect(component.validationResult).toBeNull();
-    expect(component.apiLogError).toBe(errorMessage);
+    expect(component.apiRequestLog).toBe(errorMessage);
     expect(console.error).toHaveBeenCalledWith(jasmine.any(Error));
 
     const errorElement: HTMLElement = fixture.debugElement.query(By.css('.api-error')).nativeElement;
@@ -111,7 +111,7 @@ describe('PasswordValidatorComponent', () => {
 
   it('Should reset the results before validating the password', () => {
     component.validationResult = true;
-    component.apiLogError = 'Previous error';
+    component.apiRequestLog = 'Previous error';
 
     const testPassword = 'mockValue';
     component.passwordInput = testPassword;
@@ -122,6 +122,6 @@ describe('PasswordValidatorComponent', () => {
     fixture.detectChanges();
 
     expect(component.validationResult).toBeTrue();
-    expect(component.apiLogError).toBe('');
+    expect(component.apiRequestLog).toBe('');
   });
 });
