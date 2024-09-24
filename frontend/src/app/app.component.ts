@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewEncapsulation } from '@angular/core';
 
 import { AuthService } from './services/auth.service';
 import { PasswordValidatorComponent } from './password-validator/password-validator.component';
@@ -8,9 +7,10 @@ import { PasswordValidatorComponent } from './password-validator/password-valida
 @Component({
   standalone: true,
   selector: 'app-root',
-  imports: [RouterOutlet, PasswordValidatorComponent, CommonModule],
+  imports: [PasswordValidatorComponent, CommonModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
+  encapsulation: ViewEncapsulation.ShadowDom
 })
 export class AppComponent {
   title = 'Password Validator';

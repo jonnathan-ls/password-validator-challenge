@@ -8,7 +8,7 @@
         <button class="authenticate-btn" (click)="authenticate()">
             Authenticate
         </button>
-        <p class="auth-log">{{ authenticationLog }}</p>
+        <p *ngIf="authenticationLog.length > 0" class="auth-log">{{ authenticationLog }}</p>
       </div>
       <app-password-validator></app-password-validator>
     </main>
