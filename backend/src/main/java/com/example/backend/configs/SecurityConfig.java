@@ -18,10 +18,12 @@ public class SecurityConfig {
         http
 			.cors(withDefaults())
 			.authorizeHttpRequests(authorizeRequests -> authorizeRequests
-					.requestMatchers("/password/validate")
-					.hasAuthority("SCOPE_password-validator/password:validate"))
+                .requestMatchers("/password/validate")
+                .hasAuthority("SCOPE_password-validator/password:validate")
+                .anyRequest().permitAll() 
+            )
 			.oauth2ResourceServer(oauth2 -> oauth2
-					.jwt(withDefaults()));  
+                .jwt(withDefaults()));  
 		return http.build();
 	}
 
