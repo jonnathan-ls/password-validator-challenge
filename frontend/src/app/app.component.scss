@@ -80,9 +80,10 @@
 }
 
 
-@media (min-width: 768px) {
+@media (max-width: 768px) {
   .main-component {
     max-width: 800px;
+    border-radius: 20px;
   }
 
   .header h1 {
