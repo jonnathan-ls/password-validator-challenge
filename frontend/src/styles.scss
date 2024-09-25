@@ -1,0 +1,15 @@
+*, *::after, *::before {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  height: 100vh;
+  color: #333;
+  display: flex;
+  min-height: 2rem;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

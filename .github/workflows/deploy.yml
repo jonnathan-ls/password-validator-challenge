@@ -1,0 +1,80 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches:
+      - main
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  ECR_FRONTEND_REPO: ${{ secrets.ECR_FRONTEND_REPO }}
+  ECR_BACKEND_REPO: ${{ secrets.ECR_BACKEND_REPO }}
+  CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
+  FRONTEND_SERVICE: ${{ secrets.FRONTEND_SERVICE }}
+  BACKEND_SERVICE: ${{ secrets.BACKEND_SERVICE }}
+  ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+  TASK_DEFINITION_FRONTEND: ${{ secrets.TASK_DEFINITION_FRONTEND }}
+  TASK_DEFINITION_BACKEND: ${{ secrets.TASK_DEFINITION_BACKEND }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: login-backend
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          mask-password: true
+          registry: ${{ env.ECR_REGISTRY }}
+
+      - name: Push Frontend Docker Image
+        env:
+          ECR_REGISTRY: ${{ env.ECR_REGISTRY }}
+          ECR_REPOSITORY: ${{ env.ECR_FRONTEND_REPO }}
+        run: |
+          docker build -t $ECR_REPOSITORY:latest ./frontend
+          docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+      - name: Push Backend Docker Image
+        env:
+          ECR_REGISTRY: ${{ env.ECR_REGISTRY }}
+          ECR_REPOSITORY: ${{ env.ECR_BACKEND_REPO }}
+        run: |
+          docker build -t $ECR_REPOSITORY:latest ./backend
+          docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+      
+      - name: Update ECS task definition for frontend
+        run: |
+          aws ecs update-service \
+            --cluster ${{ env.CLUSTER_NAME }} \
+            --service ${{ env.FRONTEND_SERVICE }} \
+            --force-new-deployment
+      
+      - name: Update ECS task definition for backend
+        run: |
+          aws ecs update-service \
+            --cluster ${{ env.CLUSTER_NAME }} \
+            --service ${{ env.BACKEND_SERVICE }} \
+            --force-new-deployment
+
+      - name: Wait for services to stabilize
+        run: |
+          aws ecs wait services-stable \
+            --cluster ${{ env.CLUSTER_NAME }} \
+            --services ${{ env.FRONTEND_SERVICE }} ${{ env.BACKEND_SERVICE }}
